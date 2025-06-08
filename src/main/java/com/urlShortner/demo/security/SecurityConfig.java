@@ -23,34 +23,32 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-
         // These are the default queries, but you can customize them if needed
         users.setUsersByUsernameQuery(
                 "select username, password, enabled from users where username=?");
         users.setAuthoritiesByUsernameQuery(
                 "select username, authority from authorities where username=?");
-
         return users;
     }
 
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .csrf(AbstractHttpConfigurer::disable) // ← disables CSRF for real
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/web/**").authenticated()
-//                        .anyRequest().permitAll()
-//                )
-//                .httpBasic(Customizer -> {}) // enable basic auth
-//                .build();
-//    }
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-        http.httpBasic(Customizer.withDefaults());
-        return http.build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable) // ← disables CSRF for real
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(Customizer -> {}) // enable basic auth
+                .build();
     }
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf(AbstractHttpConfigurer::disable);
+//        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+//        http.httpBasic(Customizer.withDefaults());
+//        return http.build();
+//    }
 }

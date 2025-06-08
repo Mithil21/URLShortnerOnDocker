@@ -3,14 +3,14 @@ version: '3.8' # Use a recent Docker Compose file format
 services:
   # 1. PostgreSQL Database Service
   postgres:
-    image: postgres:13 # Use a specific version of PostgreSQL
+    image: postgres:17 # Use a specific version of PostgreSQL
     container_name: url-shortener-postgres
     ports:
-      - "5432:5432" # Map host port 5432 to container port 5432
+      - "1234:5432" # Map host port 5432 to container port 5432
     environment:
-      POSTGRES_DB: your_database_name # The database name for your app
-      POSTGRES_USER: your_postgres_user # The user for your database
-      POSTGRES_PASSWORD: your_postgres_password # The password for your user
+      POSTGRES_DB: urlshortner # The database name for your app
+      POSTGRES_USER: postgres # The user for your database
+      POSTGRES_PASSWORD: root # The password for your user
     volumes:
       - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data
     restart: always # Always restart if it crashes
@@ -39,7 +39,7 @@ services:
       SPRING_DATA_REDIS_PORT: 6379
       # SPRING_DATA_REDIS_PASSWORD: your_redis_password # Uncomment if Redis has a password
 
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres # 'postgres' is the service name
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/urlshortner
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
