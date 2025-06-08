@@ -1,0 +1,55 @@
+version: '3.8' # Use a recent Docker Compose file format
+
+services:
+  # 1. PostgreSQL Database Service
+  postgres:
+    image: postgres:13 # Use a specific version of PostgreSQL
+    container_name: url-shortener-postgres
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432
+    environment:
+      POSTGRES_DB: your_database_name # The database name for your app
+      POSTGRES_USER: your_postgres_user # The user for your database
+      POSTGRES_PASSWORD: your_postgres_password # The password for your user
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data
+    restart: always # Always restart if it crashes
+
+  # 2. Redis Cache Service
+  redis:
+    image: redis:7-alpine # Use a lightweight Redis image
+    container_name: url-shortener-redis
+    ports:
+      - "6379:6379" # Map host port 6379 to container port 6379
+    volumes:
+      - redis_data:/data # Persist Redis data
+    command: redis-server --appendonly yes # Enable AOF persistence for data durability
+    restart: always # Always restart if it crashes
+
+  # 3. Spring Boot Application Service
+  app:
+    build: . # Build the image from the Dockerfile in the current directory
+    container_name: url-shortener-app
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    environment:
+      # Spring Boot configuration to connect to Redis and PostgreSQL using service names
+      SPRING_DATA_REDIS_HOST: redis # 'redis' is the service name in docker-compose
+      SPRING_DATA_REDIS_PORT: 6379
+      # SPRING_DATA_REDIS_PASSWORD: your_redis_password # Uncomment if Redis has a password
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres # 'postgres' is the service name
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update # Match your application.properties setting
+
+    depends_on:
+      - redis   # Ensure Redis starts before the app
+      - postgres # Ensure PostgreSQL starts before the app
+    restart: always # Always restart if it crashes
+
+# Define named volumes for data persistence
+volumes:
+  postgres_data:
+  redis_data:
