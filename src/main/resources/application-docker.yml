@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/postgres # Use 'postgres' as the hostname (service name)
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  redis:
+    host: redis       # Use 'redis' as the hostname (service name)
+    port: 6379
+    timeout: 5000
+
+server:
+  port: 8085 # Your app's internal port, mapped to 8085 on host in application-docker.yml

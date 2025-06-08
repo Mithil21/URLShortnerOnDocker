@@ -31,8 +31,9 @@ services:
     build: . # Build the image from the Dockerfile in the current directory
     container_name: url-shortener-app
     ports:
-      - "8080:8080" # Map host port 8080 to container port 8080
+      - "8085:8085" # Map host port 8080 to container port 8080
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       # Spring Boot configuration to connect to Redis and PostgreSQL using service names
       SPRING_DATA_REDIS_HOST: redis # 'redis' is the service name in docker-compose
       SPRING_DATA_REDIS_PORT: 6379
