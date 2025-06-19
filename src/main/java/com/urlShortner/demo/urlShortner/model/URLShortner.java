@@ -1,10 +1,11 @@
 package com.urlShortner.demo.urlShortner.model;
 
+import com.urlShortner.demo.base.model.AbstractDomainEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "url_mapping")
-public class URLShortner {
+public class URLShortner extends AbstractDomainEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
